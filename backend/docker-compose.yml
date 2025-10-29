@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  # MongoDB service for persistent data storage. A single instance is
+  # sufficient for this demo; in production consider Azure Cosmos DB
+  mongo:
+    image: mongo:6.0
+    restart: always
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - "27017:27017"
+
+
+  # Authentication microservice
+  auth-service:
+    build: ./auth-service
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_URI=mongodb://mongo:27017
+      - JWT_SECRET=supersecret
+      - ADMIN_USERNAME=admin
+      - ADMIN_PASSWORD=admin123
+      - ADMIN_ROLE=admin
+    ports:
+      - "5000:5000"
+
+  # Product microservice
+  product-service:
+    build: ./product-service
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_URI=mongodb://mongo:27017
+      - JWT_SECRET=supersecret
+    ports:
+      - "5001:5001"
+
+  # Order microservice
+  order-service:
+    build: ./order-service
+    depends_on:
+      - mongo
+      - product-service
+    environment:
+      - MONGO_URI=mongodb://mongo:27017
+      - JWT_SECRET=supersecret
+      - PRODUCT_SERVICE_URL=http://product-service:5001
+    ports:
+      - "5002:5002"
+
+volumes:
+  mongo_data:

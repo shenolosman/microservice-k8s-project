@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service
+  namespace: microshop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-service
+  template:
+    metadata:
+      labels:
+        app: auth-service
+    spec:
+      containers:
+        - name: auth-service
+          # Replace the image below with your Docker Hub repository
+          image: shenolosman/microshop-auth:latest
+          ports:
+            - containerPort: 5000
+          env:
+            # Connection string to the auth database. Use the root credentials defined in mongo-secret.
+            - name: MONGO_URI
+              value: mongodb://admin:password@mongo:27017/auth_db
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_SECRET
