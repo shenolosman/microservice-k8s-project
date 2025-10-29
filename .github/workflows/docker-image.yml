@@ -1,0 +1,55 @@
+name: Build and Push Docker Images
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      # Check out your repository code
+      - uses: actions/checkout@v4
+
+      # Log in to Docker Hub using the secrets
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Set up Docker Buildx
+      - uses: docker/setup-buildx-action@v3
+
+      # Build and push the auth-service image
+      - name: Build and push auth-service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend/auth-service
+          push: true
+          tags: shenolosman/microshop-auth:latest
+
+      # Build and push the product-service image
+      - name: Build and push product-service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend/product-service
+          push: true
+          tags: shenolosman/microshop-product:latest
+
+      # Build and push the order-service image
+      - name: Build and push order-service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend/order-service
+          push: true
+          tags: shenolosman/microshop-order:latest
+
+      # Build and push the frontend image (optional: remove if hosting static frontend elsewhere)
+      - name: Build and push frontend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          push: true
+          tags: shenolosman/microshop-frontend:latest
