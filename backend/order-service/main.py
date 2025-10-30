@@ -35,6 +35,9 @@ def verify_token(token: str) -> str | None:
     except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
         return None
 
+@app.route("/")
+def index():
+    return "Service is running", 200
 
 @app.route('/orders', methods=['POST'])
 def create_order():

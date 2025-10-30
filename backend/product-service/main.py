@@ -63,6 +63,9 @@ def seed_products_if_empty() -> None:
 
 # Seed on first run when empty (idempotent)
 seed_products_if_empty()
+@app.route("/")
+def index():
+    return "Service is running", 200
 
 @app.route('/products', methods=['GET'])
 def get_products():

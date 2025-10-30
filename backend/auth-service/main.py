@@ -133,6 +133,9 @@ def list_users():
         users.append({'id': str(user['_id']), 'username': user['username'], 'role': user.get('role', 'user')})
     return jsonify(users), 200
 
+@app.route("/")
+def index():
+    return "Service is running", 200
 
 if __name__ == '__main__':
     # Only for local development; in production use gunicorn or uvicorn
