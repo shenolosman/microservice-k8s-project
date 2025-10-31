@@ -32,3 +32,8 @@ spec:
                   key: MONGO_INITDB_ROOT_PASSWORD
             - name: MONGO_URI
               value: mongodb://$(MONGO_USER):$(MONGO_PASS)@mongo:27017/product_db
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_SECRET
