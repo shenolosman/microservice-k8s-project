@@ -20,6 +20,16 @@ spec:
           ports:
             - containerPort: 5002
           env:
+            - name: MONGO_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: MONGO_INITDB_ROOT_USERNAME
+            - name: MONGO_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: MONGO_INITDB_ROOT_PASSWORD
             - name: MONGO_URI
               value: mongodb://$(MONGO_USER):$(MONGO_PASS)@mongo:27017/order_db
             - name: PRODUCT_SERVICE_URL
